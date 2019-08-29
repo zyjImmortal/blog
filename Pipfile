@@ -10,6 +10,8 @@ cymysql = "*"
 flask-script = "*"
 flask-migrate = "*"
 flask-session = "*"
+flask-redis = "*"
+flask-mail = "*"
 
 [dev-packages]
 
