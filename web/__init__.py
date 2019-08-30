@@ -1,13 +1,16 @@
 import logging
 from logging.handlers import RotatingFileHandler
-
+from datetime import datetime, date
 from flask import Flask
 from flask_mail import Mail
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from redis import StrictRedis
+from flask.json import JSONEncoder as _JSONEncoder
+from werkzeug.exceptions import HTTPException
 
 from config import config
+from web.exception import APIException, UnknownException
 
 db = SQLAlchemy()
 mail = Mail()
@@ -22,6 +25,17 @@ def setup_log(config_name):
     logging.getLogger().addHandler(file_log_handler)
 
 
+class JSONEncoder(_JSONEncoder):
+    def default(self, o):
+        if hasattr(o, 'keys') and hasattr(o, '__getitem__'):
+            return dict(o)
+        if isinstance(o, datetime):
+            return o.strftime('%Y-%m-%dT%H:%M:%SZ')
+        if isinstance(o, date):
+            return o.strftime('%Y-%m-%d')
+        return JSONEncoder.default(self, o)
+
+
 def create_app(config_name):
     setup_log(config_name)
     app = Flask(__name__)
@@ -32,7 +46,27 @@ def create_app(config_name):
     # decode_responses设置为True，自动将字节数据解析
     redis_store = StrictRedis(host=config[config_name].REDIS_HOST,
                               port=config[config_name].REDIS_PORT, decode_responses=True)
-    Session(app)  # 指定session存储位置
+    Session(app)  # 需要在config文件对session进行配置存储位置等
+    # 自定义json序列化对象
+    app.json_encoder = JSONEncoder
+
+    # 注册全局错误处理器
+    @app.errorhandler(Exception)
+    def handler(e):
+        if isinstance(e, APIException):
+            return e
+        if isinstance(e, HTTPException):
+            code = e.code
+            msg = e.description
+            error_code = 20000
+            return APIException(msg, code, error_code)
+        else:
+            if not app.config['DEBUG']:
+                import traceback
+                app.logger.error(traceback.format_exc())
+                return UnknownException()
+            else:
+                raise e
 
     # 注册蓝图
 
