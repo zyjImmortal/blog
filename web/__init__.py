@@ -5,6 +5,7 @@ from flask import Flask
 from flask_mail import Mail
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from redis import StrictRedis
 from flask.json import JSONEncoder as _JSONEncoder
 from werkzeug.exceptions import HTTPException
@@ -27,6 +28,7 @@ def setup_log(config_name):
 
 class JSONEncoder(_JSONEncoder):
     def default(self, o):
+        # hasattr判断一个对象是否有name属性或者name方法，hasattr(o,name)
         if hasattr(o, 'keys') and hasattr(o, '__getitem__'):
             return dict(o)
         if isinstance(o, datetime):
@@ -34,6 +36,17 @@ class JSONEncoder(_JSONEncoder):
         if isinstance(o, date):
             return o.strftime('%Y-%m-%d')
         return JSONEncoder.default(self, o)
+
+
+def register_blu(app):
+    from web.views.user import user
+    from web.views.article import article
+    from web.views.home import home
+    from web.views.cms import cms
+    app.register_blueprint(user)
+    app.register_blueprint(article)
+    app.register_blueprint(home)
+    app.register_blueprint(cms)
 
 
 def create_app(config_name):
@@ -47,6 +60,7 @@ def create_app(config_name):
     redis_store = StrictRedis(host=config[config_name].REDIS_HOST,
                               port=config[config_name].REDIS_PORT, decode_responses=True)
     Session(app)  # 需要在config文件对session进行配置存储位置等
+    # CORS(app)
     # 自定义json序列化对象
     app.json_encoder = JSONEncoder
 
@@ -69,11 +83,6 @@ def create_app(config_name):
                 raise e
 
     # 注册蓝图
+    register_blu()
 
-    from web.views.user import user
-    from web.views.article import article
-    from web.views.home import home
-    app.register_blueprint(user)
-    app.register_blueprint(article)
-    app.register_blueprint(home)
     return app

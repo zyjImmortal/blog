@@ -12,6 +12,7 @@ flask-migrate = "*"
 flask-session = "*"
 flask-redis = "*"
 flask-mail = "*"
+flask-cors = "*"
 
 [dev-packages]
 
