@@ -14,7 +14,7 @@ class RedisUtil:
         return redis.StrictRedis(host=host, port=port, db=db)
 
     @classmethod
-    def set(cls, key, value, expire):
+    def set(cls, key, value, expire=None):
         if expire:
             expire_in_seconds = expire
         else:

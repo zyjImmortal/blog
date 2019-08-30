@@ -24,9 +24,6 @@ $(function () {
     $(".register_form #register_email").focus(function () {
         $("#register-email-err").hide();
     });
-    $(".register_form #imagecode").focus(function () {
-        $("#register-image-code-err").hide();
-    });
     $(".register_form #smscode").focus(function () {
         $("#register-sms-code-err").hide();
     });
@@ -57,7 +54,7 @@ $(function () {
     // 打开注册框
     $('.register_btn').click(function () {
         $('.register_form_con').show();
-        generateImageCode()
+        // generateImageCode()
     })
 
 
@@ -65,7 +62,7 @@ $(function () {
     $('.to_register').click(function () {
         $('.login_form_con').hide();
         $('.register_form_con').show();
-        generateImageCode()
+        // generateImageCode()
     })
 
     // 登录框和注册框切换
@@ -168,15 +165,15 @@ $(function () {
     })
 });
 
-let imageCodeId = "";
-
-// TODO 生成一个图片验证码的编号，并设置页面中图片验证码img标签的src属性
-function generateImageCode() {
-    imageCodeId = generateUUID();
-    let url = '/passport/image_code?imageCodeId=' + imageCodeId;
-    // 设置src属性，就会自动向这个url发送请求
-    $(".get_pic_code").attr("src", url);
-}
+// let imageCodeId = "";
+//
+// // TODO 生成一个图片验证码的编号，并设置页面中图片验证码img标签的src属性
+// function generateImageCode() {
+//     imageCodeId = generateUUID();
+//     let url = '/passport/image_code?imageCodeId=' + imageCodeId;
+//     // 设置src属性，就会自动向这个url发送请求
+//     $(".get_pic_code").attr("src", url);
+// }
 
 // 发送短信验证码
 function sendSMSCode() {
