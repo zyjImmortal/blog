@@ -46,7 +46,7 @@ class User(BaseModel, db.Model):
         default="MAN")
 
     # 当前用户收藏的所有文章
-    collection_news = db.relationship("Articles", secondary=tb_user_collection, lazy="dynamic")  # 用户收藏的新闻
+    collection_articles = db.relationship("Articles", secondary=tb_user_collection, lazy="dynamic")  # 用户收藏的新闻
     # 用户所有的粉丝，添加了反向引用followed，代表用户都关注了哪些人
     followers = db.relationship('User',
                                 secondary=tb_user_follows,
@@ -105,7 +105,7 @@ class Articles(BaseModel, db.Model):
     clicks = db.Column(db.Integer, default=0)  # 浏览量
     index_image_url = db.Column(db.String(256))  # 文章列表图片路径
     category_id = db.Column(db.Integer, db.ForeignKey("article_category.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("article_user.id"))  # 当前文章的作者id
+    user_id = db.Column(db.Integer, db.ForeignKey("blog_user.id"))  # 当前文章的作者id
     status = db.Column(db.Integer, default=0)  # 当前文章状态 如果为0代表审核通过，1代表审核中，-1代表审核不通过
     reason = db.Column(db.String(256))  # 未通过原因，status = -1 的时候使用
     # 当前新闻的所有评论

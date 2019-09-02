@@ -83,6 +83,6 @@ def create_app(config_name):
                 raise e
 
     # 注册蓝图
-    register_blu()
+    register_blu(app)
 
     return app

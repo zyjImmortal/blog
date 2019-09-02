@@ -69,7 +69,7 @@ $(function () {
     $('.to_login').click(function () {
         $('.login_form_con').show();
         $('.register_form_con').hide();
-    })
+    });
 
     // 根据地址栏的hash值来显示用户中心对应的菜单
     var sHash = window.location.hash;
@@ -99,8 +99,7 @@ $(function () {
     // TODO 登录表单提交
     $(".login_form_con").submit(function (e) {
         e.preventDefault()
-        var mobile = $(".login_form #mobile").val();
-        var username = $(".login_form #musername").val();
+        var username = $(".login_form #username").val();
         var password = $(".login_form #password").val();
 
         if (!username) {
@@ -114,6 +113,24 @@ $(function () {
         }
 
         // 发起登录请求
+        let params = {
+            "username": username,
+            "password": password
+        };
+        $.ajax({
+            url: "/user/login",
+            type: "post",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(params),
+            success: function (response) {
+                if (response.error_code === 0) {
+                    location.reload(true);
+                } else {
+                    $('#register-password-err').html(response.msg);
+                    $('#register-password-err').show();
+                }
+            }
+        })
     });
 
 
@@ -123,7 +140,6 @@ $(function () {
         e.preventDefault();
 
         // 取到用户输入的内容
-        let mobile = $("#register_mobile").val();
         let username = $("#register_username").val();
         let email = $("#register_email").val();
         let smscode = $("#smscode").val();
@@ -155,12 +171,26 @@ $(function () {
 
         // 发起注册请求
         let params = {
-            "username":username,
-            "email":email,
-            "image_code":""
+            "username": username,
+            "email_address": email,
+            "email_code": smscode,
+            "password": password
         };
         $.ajax({
-            url:""
+            url: "/user/register",
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(params),
+            success: function (response) {
+                if (response.error_code === 0) {
+                    // 注册成功进入登录框
+                    $('.login_form_con').show();
+                    $('.register_form_con').hide();
+                } else {
+                    $('#register-password-err').html(response.msg);
+                    $('#register-password-err').show();
+                }
+            }
         })
     })
 });
@@ -197,25 +227,25 @@ function sendSMSCode() {
 
     // TODO 发送邮箱验证码
     let params = {
-        "username":username,
-        "email":email,
-        "image_code":imageCode,
-        "image_code_id":imageCodeId
+        "username": username,
+        "email": email,
+        "image_code": imageCode,
+        "image_code_id": imageCodeId
     };
     $.ajax({
-        url:"/passport/mail",
-        type:"post",
-        data:JSON.stringify(params),
-        contentType:"application/json",
-        success:function (response) {
-            if (response.errno === "0"){
+        url: "/passport/mail",
+        type: "post",
+        data: JSON.stringify(params),
+        contentType: "application/json",
+        success: function (response) {
+            if (response.errno === "0") {
                 let num = 60;
                 let t = setInterval(function () {
-                    if (num === 1){
+                    if (num === 1) {
                         clearInterval(t);
                         $(".get_code").html("点击获取验证码");
                         $(".get_code").attr("onclick", "sendSMSCode();");
-                    } else{
+                    } else {
                         num -= 1;
                         // 设置a标签显示的内容
                         $(".get_code").html(num + "秒");
