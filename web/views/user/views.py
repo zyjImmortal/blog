@@ -80,7 +80,11 @@ def login():
         return ParameterException(msg="用户名格式错误")
     if not re.match(r'[0-9a-zA-Z]{6,15}', password):
         return ParameterException(msg="密码格式错误")
-    user = User.query.filter_by(nick_name=username).first()
+    try:
+        user = User.query.filter_by(nick_name=username).first()
+    except Exception as e:
+        current_app.logger.error(e)
+        return UnknownException()
     if not user:
         return ParameterException(msg="用户名输入错误")
     if not user.check_password(password):

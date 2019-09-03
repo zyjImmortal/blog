@@ -23,6 +23,7 @@ class APIException(HTTPException):
         super(APIException, self).__init__(msg, None)
 
     def get_body(self, environ=None):
+        # 定义返回响应
         body = dict(
             msg=self.msg,
             error_code=self.error_code,
@@ -85,7 +86,7 @@ class ExpiredTokenException(APIException):
 
 
 class UnknownException(APIException):
-    code = 200
+    code = 500
     msg = '服务器未知错误'
     error_code = 999
 

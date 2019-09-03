@@ -3,7 +3,7 @@ import logging
 import time
 from logging.handlers import RotatingFileHandler
 from datetime import datetime, date
-from flask import Flask, request, g
+from flask import Flask, request, g, make_response
 from flask_mail import Mail
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
@@ -76,7 +76,9 @@ def register_after_request(app):
             json.dumps(request.args, ensure_ascii=False),
             req_body
         )
-        app.logger.info(message)
+        # resp = flask.wrappers.Response,as_text=True表示Unicode字符串输出，False表示字节类型输出
+        if resp.content_type == "application/json":
+            app.logger.info(message + "\n" + "response -> " + resp.get_data(as_text=True))
         return resp
 
 
