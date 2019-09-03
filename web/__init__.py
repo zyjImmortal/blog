@@ -1,17 +1,19 @@
+import json
 import logging
+import time
 from logging.handlers import RotatingFileHandler
 from datetime import datetime, date
-from flask import Flask
+from flask import Flask, request, g
 from flask_mail import Mail
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
 from redis import StrictRedis
 from flask.json import JSONEncoder as _JSONEncoder
 from werkzeug.exceptions import HTTPException
 
-from config import config
+from web.config.config import config
 from web.exception import APIException, UnknownException
+from .logger import Log
 
 db = SQLAlchemy()
 mail = Mail()
@@ -49,16 +51,47 @@ def register_blu(app):
     app.register_blueprint(cms)
 
 
+def register_before_request(app):
+    @app.before_request
+    def request_cost_time():
+        g.request_start_time = time.time()
+        g.request_time = lambda: "%.5f" % (time.time() - g.request_start_time)
+
+
+def register_after_request(app):
+    @app.after_request
+    def log_response(resp):
+        message = '[%s] -> [%s] from:%s costs:%.3f ms' % (
+            request.method,
+            request.path,
+            request.remote_addr,
+            float(g.request_time()) * 1000
+        )
+        req_body = '{}'
+        try:
+            req_body = request.get_json() if request.get_json() else {}
+        except:
+            pass
+        message += " data:{\n\tparam: %s, \n\tbody: %s\n} " % (
+            json.dumps(request.args, ensure_ascii=False),
+            req_body
+        )
+        app.logger.info(message)
+        return resp
+
+
 def create_app(config_name):
-    setup_log(config_name)
+    # setup_log(config_name)
     app = Flask(__name__)
     app.config.from_object(config[config_name])
+    app.config.from_object("web.config.log")
     db.init_app(app)
     mail.init_app(app)
     global redis_store
     # decode_responses设置为True，自动将字节数据解析
     redis_store = StrictRedis(host=config[config_name].REDIS_HOST,
                               port=config[config_name].REDIS_PORT, decode_responses=True)
+    Log(app)
     Session(app)  # 需要在config文件对session进行配置存储位置等
     # CORS(app)
     # 自定义json序列化对象
@@ -84,5 +117,6 @@ def create_app(config_name):
 
     # 注册蓝图
     register_blu(app)
-
+    register_before_request(app)
+    register_after_request(app)
     return app

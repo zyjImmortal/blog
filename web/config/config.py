@@ -25,12 +25,12 @@ class Config:
     MAIL_PASSWORD = 'zyj866955'
     MAIL_SUBJECT_PREFIX = '南极仙翁'
     SECRET_KEY = "jinwenjun"
-    JSON_AS_ASCII = True
+    JSON_AS_ASCII = False
 
 
 class Dev(Config):
     DEBUG = True
-    LOG_LEVEL = logging.DEBUG
+    # LOG_LEVEL = logging.DEBUG
 
 
 class Pro(Config):
@@ -41,3 +41,4 @@ config = {
     'dev': Dev,
     'pro': Pro
 }
+

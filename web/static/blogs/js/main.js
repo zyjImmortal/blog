@@ -126,8 +126,8 @@ $(function () {
                 if (response.error_code === 0) {
                     location.reload(true);
                 } else {
-                    $('#register-password-err').html(response.msg);
-                    $('#register-password-err').show();
+                    $('#login-password-err').html(response.msg);
+                    $('#login-password-err').show();
                 }
             }
         })
