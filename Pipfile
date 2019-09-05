@@ -13,6 +13,8 @@ flask-session = "*"
 flask-redis = "*"
 flask-mail = "*"
 flask-cors = "*"
+flask-wtf = "*"
+wtforms = "*"
 
 [dev-packages]
 

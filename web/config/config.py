@@ -27,6 +27,9 @@ class Config:
     SECRET_KEY = "jinwenjun"
     JSON_AS_ASCII = False
 
+    # 文章点击排行榜数量限制
+    TOP_CLICK_COUNTS = 7
+
 
 class Dev(Config):
     DEBUG = True

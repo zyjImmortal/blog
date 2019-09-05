@@ -93,3 +93,10 @@ def login():
     session['user_id'] = user.id
     session['user_email'] = user.email
     return Success(msg="登录成功")
+
+
+@user.route('/logout')
+def logout():
+    session['user_id'] = None
+    session['username'] = None
+    session['user_email'] = None
