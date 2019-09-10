@@ -7,6 +7,7 @@ from flask import Flask, request, g, make_response
 from flask_mail import Mail
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
 from redis import StrictRedis
 from flask.json import JSONEncoder as _JSONEncoder
 from werkzeug.exceptions import HTTPException
@@ -45,10 +46,12 @@ def register_blu(app):
     from web.views.article import article
     from web.views.home import home
     from web.views.cms import cms
+    from web.views.aux import aux
     app.register_blueprint(user)
     app.register_blueprint(article)
     app.register_blueprint(home)
     app.register_blueprint(cms)
+    app.register_blueprint(aux)
 
 
 def register_before_request(app):
@@ -70,11 +73,13 @@ def register_after_request(app):
         req_body = '{}'
         try:
             req_body = request.get_json() if request.get_json() else {}
+            req_form_data = request.form if request.form else {}
         except:
             pass
-        message += " data:{\n\tparam: %s, \n\tbody: %s\n} " % (
+        message += " data:{\n\tparam: %s, \n\tbody: %s\n,\n\tform data: %s\n} " % (
             json.dumps(request.args, ensure_ascii=False),
-            req_body
+            req_body,
+            req_form_data
         )
         # resp = flask.wrappers.Response,as_text=True表示Unicode字符串输出，False表示字节类型输出
         if resp.content_type == "application/json":
@@ -95,6 +100,7 @@ def create_app(config_name):
                               port=config[config_name].REDIS_PORT, decode_responses=True)
     Log(app)
     Session(app)  # 需要在config文件对session进行配置存储位置等
+    Bootstrap(app)
     # CORS(app)
     # 自定义json序列化对象
     app.json_encoder = JSONEncoder

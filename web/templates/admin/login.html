@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新经资讯后台管理</title>
+    {{ bootstrap.load_css() }}
+    {{ bootstrap.load_js() }}
+    <link rel="stylesheet" type="text/css" href="../../static/admin/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../../static/admin/css/main.css">
+</head>
+<body>
+{#with_categories=True才会返回分类信息#}
+{% for category,message in get_flashed_messages(with_categories=True) %}
+    <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">
+                &times;
+            </span>
+        </button>
+        <strong>{{ category }}!</strong>
+        {{ message }}
+    </div>
+{% endfor %}
+<div class="login_logo">
+    <img src="../../static/admin/images/logo.png" alt="">
+</div>
+<form method="post" class="login_form">
+    <h1 class="login_title">用户登录</h1>
+    <input type="text" name="nick_name" placeholder="用户名" class="input_txt">
+    <input type="password" name="password" placeholder="密码" class="input_txt">
+    <div class="error_tip">错误提示</div>
+    <input type="submit" value="登 录" class="input_sub">
+</form>
+<div class="login_bg"></div>
+</body>
+</html>

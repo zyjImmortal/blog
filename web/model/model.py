@@ -1,6 +1,7 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from web.exception import NotFound, ParameterException, AuthFailed
 from web.utils import constants
 from web import db
 
@@ -60,7 +61,7 @@ class User(BaseModel, db.Model):
 
     @property
     def password(self):
-        raise AttributeError("当前属性不可读")
+        raise self.password_hash
 
     @password.setter
     def password(self, value):
@@ -91,6 +92,17 @@ class User(BaseModel, db.Model):
             "last_login": self.last_login.strftime("%Y-%m-%d %H:%M:%S"),
         }
         return resp_dict
+
+    @classmethod
+    def verify(cls, nickname, password):
+        user = cls.query.filter_by(nick_name=nickname).first()
+        if user is None or user.delete_time is not None:
+            raise NotFound(msg='用户不存在')
+        if not user.check_password(password):
+            raise ParameterException(msg='密码错误，请输入正确密码')
+        if not user.is_admin:
+            raise AuthFailed(msg='您目前还不是管理员，请联系超级管理员开通权限')
+        return user
 
 
 class Articles(BaseModel, db.Model):
