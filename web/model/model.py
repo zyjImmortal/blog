@@ -1,9 +1,41 @@
 from datetime import datetime
+
+from sqlalchemy import orm, inspect
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from web.exception import NotFound, ParameterException, AuthFailed
 from web.utils import constants
 from web import db
+
+
+class MixinJSONSerializer:
+    @orm.reconstructor
+    def init_on_load(self):
+        self._fields = []
+        self._exclude = []
+
+        self._set_fields()
+        self.__prune_fields()
+
+    def _set_fields(self):
+        pass
+
+    def __prune_fields(self):
+        columns = inspect(self.__class__).columns
+        if not self._fields:
+            all_columns = set([column.name for column in columns])
+            self._fields = list(all_columns - set(self._exclude))
+
+    def hide(self, *args):
+        for key in args:
+            self._fields.remove(key)
+        return self
+
+    def keys(self):
+        return self._fields
+
+    def __getitem__(self, key):
+        return getattr(self, key)
 
 
 class BaseModel(object):
@@ -27,7 +59,7 @@ tb_user_follows = db.Table(
 )
 
 
-class User(BaseModel, db.Model):
+class User(BaseModel, db.Model, MixinJSONSerializer):
     """用户"""
     __tablename__ = "blog_user"
 
@@ -61,7 +93,7 @@ class User(BaseModel, db.Model):
 
     @property
     def password(self):
-        raise self.password_hash
+        return self.password_hash
 
     @password.setter
     def password(self, value):
@@ -96,8 +128,10 @@ class User(BaseModel, db.Model):
     @classmethod
     def verify(cls, nickname, password):
         user = cls.query.filter_by(nick_name=nickname).first()
-        if user is None or user.delete_time is not None:
+        if user is None:
             raise NotFound(msg='用户不存在')
+        # if user is None or user.delete_time is not None:
+        #     raise NotFound(msg='用户不存在')
         if not user.check_password(password):
             raise ParameterException(msg='密码错误，请输入正确密码')
         if not user.is_admin:
@@ -105,7 +139,7 @@ class User(BaseModel, db.Model):
         return user
 
 
-class Articles(BaseModel, db.Model):
+class Articles(BaseModel, db.Model, MixinJSONSerializer):
     """文章"""
     __tablename__ = "blog_article"
 
@@ -162,7 +196,7 @@ class Articles(BaseModel, db.Model):
         return resp_dict
 
 
-class Comment(BaseModel, db.Model):
+class Comment(BaseModel, db.Model, MixinJSONSerializer):
     """评论"""
     __tablename__ = "article_comment"
 
@@ -187,14 +221,14 @@ class Comment(BaseModel, db.Model):
         return resp_dict
 
 
-class CommentLike(BaseModel, db.Model):
+class CommentLike(BaseModel, db.Model, MixinJSONSerializer):
     """评论点赞"""
     __tablename__ = "article_comment_like"
     comment_id = db.Column("comment_id", db.Integer, db.ForeignKey("article_comment.id"), primary_key=True)  # 评论编号
     user_id = db.Column("user_id", db.Integer, db.ForeignKey("blog_user.id"), primary_key=True)  # 用户编号
 
 
-class Category(BaseModel, db.Model):
+class Category(BaseModel, db.Model, MixinJSONSerializer):
     """文章分类"""
     __tablename__ = "article_category"
 

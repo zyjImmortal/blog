@@ -31,7 +31,8 @@ def setup_log(config_name):
 
 class JSONEncoder(_JSONEncoder):
     def default(self, o):
-        # hasattr判断一个对象是否有name属性或者name方法，hasattr(o,name)
+        # model需继承MixinJSONSerializer
+        # MixinJSONSerializer里实现了keys 和__getitem__方法,方便将自定义对象转化为字典
         if hasattr(o, 'keys') and hasattr(o, '__getitem__'):
             return dict(o)
         if isinstance(o, datetime):

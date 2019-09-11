@@ -7,14 +7,17 @@ class APIException(HTTPException):
     code = 500
     msg = "抱歉，服务器未知错误"
     error_code = 999
+    data = {}
 
-    def __init__(self, msg=None, code=None, error_code=None, headers=None):
+    def __init__(self, msg=None, code=None, error_code=None, headers=None, data=None):
         if code:
             self.code = code
         if msg:
             self.msg = msg
         if error_code:
             self.error_code = error_code
+        if data:
+            self.data = data
         if headers is not None:
             headers_merged = headers.copy()
             headers_merged.update(self.headers)
@@ -27,7 +30,8 @@ class APIException(HTTPException):
         body = dict(
             msg=self.msg,
             error_code=self.error_code,
-            request=request.method + '  ' + self.get_url_no_param()
+            request=request.method + '  ' + self.get_url_no_param(),
+            data=self.data
         )
         text = json.dumps(body)
         # 转换为字符串

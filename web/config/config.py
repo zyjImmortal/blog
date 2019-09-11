@@ -30,6 +30,9 @@ class Config:
     # 文章点击排行榜数量限制
     TOP_CLICK_COUNTS = 7
 
+    # 分页配置
+
+
 
 class Dev(Config):
     DEBUG = True
