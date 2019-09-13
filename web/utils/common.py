@@ -23,9 +23,8 @@ def send_register_mail_code(mail: Mail, to_email_address, username, email_code):
 
 
 def get_current_user():
-    username = session.get("nick_name", None)
-    password = session.get("password", None)
-    if username and password:
-        user = User.query.filter_by(nick_name=username).first()
+    user_id = session.get("user_id", None)
+    if user_id:
+        user = User.query.get(id=user_id)
         return user if user else None
     return None

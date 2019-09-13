@@ -47,4 +47,15 @@ $(function () {
 
 function updateNewsData() {
     // TODO 更新新闻数据
+    let params = {
+        "cid":currentCid,
+        "page":cur_page
+    };
+    $.get("/article/list", params,function (resp) {
+        if (resp.error_code === 0){
+            // 请求成功，清除数据，加载新数据
+            $(".list_con").html("");
+            $(".list_con").ht
+        }
+    })
 }

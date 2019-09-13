@@ -47,6 +47,14 @@ class CmsLoginForm(Form):
 
 
 class CreateOrUpdateArticleForm(Form):
+    title = StringField('标题', validators=[
+        DataRequired('标题不能为空'),
+        length(min=2, max=50, message="标题长度必须在2-50之间")
+    ])
+    digest = StringField('摘要', validators=[
+        DataRequired("摘要不能为空"),
+        length(min=20, max=50)
+    ])
     pass
 
 

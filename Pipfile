@@ -17,6 +17,7 @@ flask-wtf = "*"
 wtforms = "*"
 bootstrap-flask = "*"
 pytest = "*"
+qiniu = "*"
 
 [dev-packages]
 

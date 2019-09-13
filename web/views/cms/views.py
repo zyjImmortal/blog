@@ -19,8 +19,7 @@ def login():
     if request.method == 'POST':
         form = CmsLoginForm().validate_for_api()
         admin = User.verify(form.nick_name.data, form.password.data)
-        session['nick_name'] = admin.nick_name
-        session['password'] = admin.password
+        session['user_id'] = admin.id
         return redirect(url_for('cms.home'))
     return render_template('admin/login.html')
 

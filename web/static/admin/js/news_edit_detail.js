@@ -7,8 +7,19 @@ $(function(){
     $(".news_edit").submit(function (e) {
         e.preventDefault()
         // TODO 新闻编辑提交
+        $(this).ajaxSubmit({
+            url: "",
+            type:"post",
+            headers:{
+                "X-CSRFToken": getCookie("csrf_token")
+            },
+            success:function (response) {
+
+
+            }
+        })
     })
-})
+});
 
 // 点击取消，返回上一页
 function cancel() {

@@ -14,13 +14,13 @@ def index():
             user = User.query.get(id=user_id)
         except Exception as e:
             current_app.logger.error(e)
-            # return UnknownException()
+            return UnknownException()
     articles = []
     try:
         articles = Articles.query.order_by(Articles.clicks.desc()).limit(current_app.config['TOP_CLICK_COUNTS'])
     except Exception as e:
         current_app.logger.error(e)
-        # return UnknownException()
+        return UnknownException()
     articles_info = [article.to_dict() for article in articles]
     info = {
         'user_info': user.to_dict() if user else None,
