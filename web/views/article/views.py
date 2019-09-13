@@ -1,4 +1,4 @@
-from flask import render_template, current_app, request
+from flask import render_template, current_app, request, abort, g
 
 from web.model.model import Category, Articles
 from web.utils.decorators import admin_required
@@ -29,7 +29,7 @@ def articles():
         current_app.logger.error(e)
         return UnknownException()
     data = {
-        "total": paginate.pages,
+        "total_pages": paginate.pages,
         "current_page": paginate.page,
         "article_list": [paginate_article.to_base_dict() for paginate_article in paginate.items]
     }
@@ -50,3 +50,36 @@ def add_article():
         'categories': categories
     }
     return render_template('admin/article_add.html', info=info)
+
+
+@article.route('/detail/<int:article_id>')
+def article_detail(article_id):
+    try:
+        article_res = Articles.query.get(article_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return UnknownException()
+
+    if not article_res:
+        # 返回数据未找到的页面
+        abort(404)
+
+    article_res.clicks += 1
+    # article_list = None
+    try:
+        article_list = Articles.query.order_by(Articles.clicks.desc()).limit(constants.CLICK_RANK_MAX_NEWS)
+    except Exception as e:
+        current_app.logger.error(e)
+        return UnknownException()
+
+    click_articles_list = []
+    for article_click in article_list if article_list else []:
+        click_articles_list.append(article_click.to_basic_dict())
+
+    data = {
+        "article": article_res.to_dict(),
+        "user_info": g.user.to_dict() if g.user else None,
+        "click_articles_list": click_articles_list,
+    }
+    return render_template('blogs/detail.html', data=data)
+    pass

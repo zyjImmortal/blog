@@ -4,7 +4,6 @@ from redis import StrictRedis
 
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = "mysql+cymysql://zhouyajun:12345678@localhost:3306/blog"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     REDIS_HOST = 'localhost'
     REDIS_PORT = 6379
@@ -33,10 +32,15 @@ class Config:
     # 分页配置
 
 
+class Ivwen(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = "mysql+cymysql://zhouyajun:12345678@localhost:3306/blog"
+    # LOG_LEVEL = logging.DEBUG
+
 
 class Dev(Config):
     DEBUG = True
-    # LOG_LEVEL = logging.DEBUG
+    SQLALCHEMY_DATABASE_URI = "mysql+cymysql://root:12345678@localhost:3306/blog"
 
 
 class Pro(Config):
@@ -47,4 +51,3 @@ config = {
     'dev': Dev,
     'pro': Pro
 }
-

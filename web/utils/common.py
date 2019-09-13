@@ -22,9 +22,21 @@ def send_register_mail_code(mail: Mail, to_email_address, username, email_code):
               'emails/sms', username=username, email_code=email_code)
 
 
+def do_index_class(index):
+    """自定义过滤器，过滤点击排序html的class"""
+    if index == 0:
+        return "first"
+    elif index == 1:
+        return "second"
+    elif index == 2:
+        return "third"
+    else:
+        return ""
+
+
 def get_current_user():
     user_id = session.get("user_id", None)
     if user_id:
-        user = User.query.get(id=user_id)
+        user = User.query.get(user_id)
         return user if user else None
     return None

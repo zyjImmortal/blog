@@ -55,6 +55,11 @@ def register_blu(app):
     app.register_blueprint(aux)
 
 
+def register_template_filter(app):
+    from web.utils.common import do_index_class
+    app.add_template_filter(do_index_class, "indexClass")
+
+
 def register_before_request(app):
     @app.before_request
     def request_cost_time():
@@ -126,6 +131,9 @@ def create_app(config_name):
 
     # 注册蓝图
     register_blu(app)
+    # 钩子函数
     register_before_request(app)
     register_after_request(app)
+    # 注册自定义模板过滤器
+    register_template_filter(app)
     return app

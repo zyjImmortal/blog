@@ -2,8 +2,9 @@ from flask import render_template, request, url_for, session, redirect, current_
 
 from web.exception import ParameterException, UnknownException, Success
 from web.forms import CmsLoginForm
-from web.model.model import User, Category
+from web.model.model import User, Category, Articles
 from web.utils.decorators import admin_required
+from web.utils import constants
 from web import db
 from . import cms
 
@@ -24,19 +25,19 @@ def login():
     return render_template('admin/login.html')
 
 
-@cms.route('/user_count.html')
+@cms.route('/user_count')
 @admin_required
 def user_count():
     return render_template('admin/user_count.html')
 
 
-@cms.route('/user_list.html')
+@cms.route('/user_list')
 @admin_required
 def user_list():
     return render_template('admin/user_list.html')
 
 
-@cms.route('/news_review.html')
+@cms.route('/news_review')
 @admin_required
 def news_review():
     return render_template('admin/news_review.html')
@@ -48,16 +49,11 @@ def article_review():
     pass
 
 
-@cms.route('/news_type.html')
+@cms.route('/news_type')
 @admin_required
 def news_type():
-    page = request.args.get('page', 1, type=int)
-    paginate_categories = Category.query.paginate(page, per_page=10, error_out=False)
-    category_info = {
-        "count": paginate_categories.count,
-        "data": paginate_categories.items
-    }
-    return render_template('admin/news_type.html')
+    categories = Category.query.all()
+    return render_template('admin/news_type.html', categories=[category.to_dict() for category in categories])
 
 
 @cms.route('/categories')
@@ -71,19 +67,49 @@ def categories():
     return Success(msg="请求成功", data=category_info)
 
 
-@cms.route('/news_edit.html')
+@cms.route('/news_edit')
 @admin_required
 def news_edit():
-    return render_template('admin/news_edit.html')
+    page = request.args.get("page", 1)
+    key_words = request.args.get("keywords", "")
+    try:
+        page = int(page)
+    except (TypeError, ValueError) as e:
+        current_app.logger.error(e)
+        page = 1
+    current_page = 1
+    total_page = 1
+
+    try:
+        filters = []
+        if key_words:
+            filters.append(Articles.title.contains(key_words))
+        paginate = Articles.query.filter(*filters).order_by(Articles.create_time.desc()) \
+            .paginate(page=page, per_page=constants.ADMIN_NEWS_PAGE_MAX_COUNT, error_out=False)
+        article_list = paginate.items
+        current_page = paginate.page
+        total_page = paginate.pages
+    except Exception as e:
+        current_page.logger.error(e)
+        return UnknownException()
+
+    article_dict_list = [article.to_base_dict() for article in article_list]
+    data = {
+        "total_page": total_page,
+        "current_page": current_page,
+        "articles": article_dict_list
+    }
+
+    return render_template('admin/news_edit.html', data=data)
 
 
-@cms.route('/news_edit_detail.html')
+@cms.route('/news_edit_detail')
 @admin_required
 def news_edit_detail():
     return render_template('admin/news_edit_detail.html')
 
 
-@cms.route('/news_review_detail.html')
+@cms.route('/news_review_detail')
 @admin_required
 def news_review_detail():
     return render_template('admin/news_review_detail.html')
