@@ -2,10 +2,12 @@ from qiniu import put_data, Auth
 
 access_key = "GoHjWCzP49AfTsmsqKe6oMZ15F2zshsvAUlYZ7L1"
 secret_key = "ByNtAa-j6-BD-ydYdX6TNvXmP_XZq_8H2ZQKhn3I"
-bucket_name = ""
+bucket_name = "zyjblog"
 
 
 def storage(data):
+    if not data:
+        return None
     try:
         q = Auth(access_key, secret_key)
         token = q.upload_token(bucket_name)

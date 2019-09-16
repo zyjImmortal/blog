@@ -4,7 +4,7 @@ from web import create_app, db
 
 
 def main():
-    app = create_app("dev")
+    app = create_app("ivwen")
     manager = Manager(app)
     Migrate(app, db)  # 关联APP和db
     manager.add_command('db', MigrateCommand)

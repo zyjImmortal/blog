@@ -25,18 +25,20 @@
     <table class="common_table">
         <tr>
             <th width="5%">id</th>
-            <th width="70%">标题</th>
+            <th width="40%">标题</th>
+            <th width="10%">阅读数</th>
             <th width="15%">发布时间</th>
-            <th width="10%">管理操作</th>
+            <th width="20%">管理操作</th>
         </tr>
         {% for Article in data.articles %}
             <tr>
                 <td>{{ Article.id }}</td>
-                <td class="tleft"><a href="/article/{{ Article.id }}" target="_blank">{{ Article.title }}</a></td>
+                <td class="tleft"><a href="/article/detail/{{ Article.id }}" target="_blank">{{ Article.title }}</a></td>
                 <td>{{ Article.clicks }}</td>
                 <td>{{ Article.create_time }}</td>
                 <td>
-                    <a href="#" class="edit">编辑</a>
+                    <a href="/article/detail/{{ Article.id }}" class="edit fl">编辑</a>
+                    <a href="/article/delete/{{ Article.id }}" class="delete">删除</a>
                 </td>
             </tr>
         {% endfor %}
@@ -51,8 +53,8 @@
 <script>
     $(function () {
         $("#pagination").pagination({
-            currentPage: data.current_page,
-            totalPage: data.total_page,
+            currentPage: {{ data.current_page }},
+            totalPage: {{ data.total_page }},
             callback: function (current) {
                 window.location = "/cms/news_edit?page=" + current;
             }

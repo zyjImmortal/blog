@@ -395,6 +395,16 @@ body {
     background: #25c192;
 }
 
+.review, .delete, .addtype {
+    display: block;
+    width: 40px;
+    line-height: 20px;
+    margin: -5px auto;
+    border-radius: 4px;
+    color: #fff;
+    background: #25c192;
+}
+
 .addtype {
     width: 100px;
     line-height: 26px;
@@ -402,6 +412,13 @@ body {
 
 .edit {
     background: #25c192;
+    margin-left: 60px;
+}
+
+.delete {
+    background: #25c192;
+    float: right;
+    margin-right: 60px;
 }
 
 .common_table .tleft {

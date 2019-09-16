@@ -1,10 +1,11 @@
-var currentCid = 0; // 当前分类 id
+var currentCid = 1; // 当前分类 id
 var cur_page = 1; // 当前页
 var total_page = 1;  // 总页数
 var data_querying = false;   // 是否正在向后台获取数据
 
 
 $(function () {
+    updateNewsData();
     // 首页分类切换
     $('.menu li').click(function () {
         var clickCid = $(this).attr('data-cid');
@@ -20,7 +21,7 @@ $(function () {
             // 重置分页参数
             cur_page = 1;
             total_page = 1;
-            updateNewsData()
+            updateNewsData();
         }
     });
 
@@ -46,6 +47,8 @@ $(function () {
                 if (cur_page < total_page) {
                     updateNewsData();
                     cur_page += 1;
+                } else {
+                    data_querying = false;
                 }
             }
         }
@@ -56,7 +59,8 @@ function updateNewsData() {
     //  更新新闻数据
     let params = {
         "cid": currentCid,
-        "page": cur_page
+        "page": cur_page,
+        'per_page': 50
     };
     $.get("/article/list", params, function (resp) {
         // 数据加载完毕，
@@ -71,9 +75,9 @@ function updateNewsData() {
             for (let i = 0; i < resp.data.article_list.length; i++) {
                 let article = resp.data.article_list[i];
                 let content = '<li>';
-                content += '<a href="#" class="news_pic fl"><img src="' + article.index_image_url + '?imageView2/1/w/170/h/170"></a>';
-                content += '<a href="#" class="news_title fl">' + article.title + '</a>';
-                content += '<a href="#" class="news_detail fl">' + article.digest + '</a>';
+                content += '<a href="article/detail/' +article.id + '" class="news_pic fl"><img src="' + article.index_image_url + '?imageView2/1/w/170/h/170"></a>';
+                content += '<a href="article/detail/' +article.id + '" class="news_title fl">' + article.title + '</a>';
+                content += '<a href="article/detail/' +article.id + '" class="news_detail fl">' + article.digest + '</a>';
                 content += '<div class="author_info fl">';
                 content += '<div class="source fl">来源：' + article.source + '</div>';
                 content += '<div class="time fl">' + article.create_time + '</div>';

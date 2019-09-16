@@ -14,8 +14,12 @@ $(function(){
                 "X-CSRFToken": getCookie("csrf_token")
             },
             success:function (response) {
-
-
+                if (resp.errno === "0") {
+                    // 返回上一页，刷新数据
+                    location.href = document.referrer;
+                } else {
+                    alert(resp.errmsg);
+                }
             }
         })
     })

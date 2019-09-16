@@ -1,9 +1,11 @@
 from flask import render_template, current_app, request, abort, g
 
+from web import db
 from web.model.model import Category, Articles
 from web.utils.decorators import admin_required
 from web.utils import constants
 from web.exception import UnknownException, ParameterException, Success
+from web.utils.file_util import storage
 from . import article
 
 
@@ -19,7 +21,7 @@ def articles():
     except (TypeError, ValueError) as e:
         current_app.logger.error(e)
         return ParameterException()
-    filters = []
+    filters = [Articles.status == 0]
     if cid != 1:
         filters.append(Articles.category_id == cid)
     try:
@@ -31,7 +33,7 @@ def articles():
     data = {
         "total_pages": paginate.pages,
         "current_page": paginate.page,
-        "article_list": [paginate_article.to_base_dict() for paginate_article in paginate.items]
+        "article_list": [paginate_article.to_basic_dict() for paginate_article in paginate.items]
     }
     return Success(data=data)
 
@@ -40,12 +42,46 @@ def articles():
 @admin_required
 def add_article():
     if request.method == "POST":
-        pass
+        title = request.form.get("title")
+        source = "博主发布"
+        digest = request.form.get("digest")
+        content = request.form.get("content")
+        index_image = request.files.get("index_image")
+        category_id = request.form.get("category_id")
+        if not all([title, source, digest, content, index_image, category_id]):
+            return ParameterException(msg="参数错误")
+        try:
+            index_image = index_image.read()
+        except Exception as e:
+            current_app.logger.error(e)
+            return ParameterException(msg="文件读取错误")
+        try:
+            key = storage(index_image)
+        except Exception as e:
+            current_app.logger.error(e)
+            return ParameterException(msg="文件上传错误")
+        article = Articles()
+        article.title = title
+        article.digest = digest
+        article.content = content
+        article.category_id = category_id
+        article.source = source
+        article.user_id = g.user.id
+        article.index_image_url = constants.QINIU_DOMIN_PREFIX + key
+        try:
+            db.session.add(article)
+            db.session.commit()
+        except Exception as e:
+            current_app.logger.error(e)
+            db.session.rollback()
+            return UnknownException()
+        return Success(msg="添加成功")
     try:
         categories = Category.query.all()
     except Exception as e:
         current_app.logger.error(e)
         return UnknownException()
+
     info = {
         'categories': categories
     }
@@ -82,4 +118,21 @@ def article_detail(article_id):
         "click_articles_list": click_articles_list,
     }
     return render_template('blogs/detail.html', data=data)
-    pass
+
+
+@article.route('/delete/<int:article_id>')
+def delete_article(article_id):
+    try:
+        article_res = Articles.query.get(article_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return UnknownException()
+    if not article_res:
+        return ParameterException(msg="文章id不存在")
+    article_res.status = 1
+    try:
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        return UnknownException()
+    return Success(msg='删除成功')

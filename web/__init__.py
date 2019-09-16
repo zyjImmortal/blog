@@ -4,12 +4,14 @@ import time
 from logging.handlers import RotatingFileHandler
 from datetime import datetime, date
 from flask import Flask, request, g, make_response
+from flask_cors import CORS
 from flask_mail import Mail
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from redis import StrictRedis
 from flask.json import JSONEncoder as _JSONEncoder
+from flask_wtf.csrf import generate_csrf
 from werkzeug.exceptions import HTTPException
 
 from web.config.config import config
@@ -90,6 +92,10 @@ def register_after_request(app):
         # resp = flask.wrappers.Response,as_text=True表示Unicode字符串输出，False表示字节类型输出
         if resp.content_type == "application/json":
             app.logger.info(message + "\n" + "response -> " + resp.get_data(as_text=True))
+
+        # 返回csrf token值
+        csrf_token = generate_csrf()
+        resp.set_cookie("csrf_token", csrf_token)
         return resp
 
 
@@ -107,7 +113,7 @@ def create_app(config_name):
     Log(app)
     Session(app)  # 需要在config文件对session进行配置存储位置等
     Bootstrap(app)
-    # CORS(app)
+    CORS(app)
     # 自定义json序列化对象
     app.json_encoder = JSONEncoder
 

@@ -81,7 +81,7 @@ def news_edit():
     total_page = 1
 
     try:
-        filters = []
+        filters = [Articles.status == 0]
         if key_words:
             filters.append(Articles.title.contains(key_words))
         paginate = Articles.query.filter(*filters).order_by(Articles.create_time.desc()) \
@@ -93,7 +93,7 @@ def news_edit():
         current_page.logger.error(e)
         return UnknownException()
 
-    article_dict_list = [article.to_base_dict() for article in article_list]
+    article_dict_list = [article.to_basic_dict() for article in article_list]
     data = {
         "total_page": total_page,
         "current_page": current_page,

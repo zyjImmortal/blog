@@ -49,5 +49,6 @@ class Pro(Config):
 
 config = {
     'dev': Dev,
+    'ivwen': Ivwen,
     'pro': Pro
 }
