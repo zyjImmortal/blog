@@ -7,6 +7,7 @@ __pycache__/
 *$py.class
 migrations/
 logs/
+.qiniu_pythonsdk_hostscache.json
 
 # C extensions
 *.so

@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>新经资讯后台管理</title>
+    <title>博客后台管理</title>
     <link rel="stylesheet" type="text/css" href="../../static/admin/css/reset.css">
     <link rel="stylesheet" type="text/css" href="../../static/admin/css/main.css">
     <script type="text/javascript" src="../../static/admin/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="../../static/admin/js/jquery.form.min.js"></script>
-    <script src="../../static/admin/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script src="../../static/admin/ckeditor5/ckeditor.js"></script>
+    <script src="../../static/admin/ckeditor5/ckeditor.js.map"></script>
     <script src="../../static/admin/js/tinymce_setup.js"></script>
     <script src="../../static/admin/js/article_add.js"></script>
 
 </head>
 <body>
 <div class="breadcrub">
-    当前位置：新闻管理>新闻版本编辑
+    当前位置：博客管理>文章编辑
 </div>
 <div class="pannel">
     <form class="news_edit" id="article_add">
@@ -46,7 +47,7 @@
         <div class="form_group">
             <label>新闻内容：</label>
             <div class="rich_wrap fl">
-                <input class="input_area" id="rich_content" name="content" value="">
+                <input class="input_area" id="editor" name="content" value="">
             </div>
         </div>
         <div class="form_group indent_group line_top">
