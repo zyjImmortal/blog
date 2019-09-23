@@ -148,6 +148,7 @@ class Articles(BaseModel, db.Model, MixinJSONSerializer):
     source = db.Column(db.String(64), nullable=False)  # 文章来源
     digest = db.Column(db.String(512), nullable=False)  # 文章摘要
     content = db.Column(db.Text, nullable=False)  # 文章内容
+    content_md = db.Column(db.Text, nullable=False)
     clicks = db.Column(db.Integer, default=0)  # 浏览量
     index_image_url = db.Column(db.String(256))  # 文章列表图片路径
     category_id = db.Column(db.Integer, db.ForeignKey("article_category.id"))
@@ -187,6 +188,7 @@ class Articles(BaseModel, db.Model, MixinJSONSerializer):
             "digest": self.digest,
             "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             "content": self.content,
+            "content_md": self.content_md,
             "comments_count": self.comments.count(),
             "clicks": self.clicks,
             "category": self.category.to_dict(),

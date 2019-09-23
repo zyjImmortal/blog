@@ -51,13 +51,19 @@ def index():
     return render_template('blogs/index.html', data=info)
 
 
-@home.route("/article/detail/<int:article_id>")
+@home.route("/article/<int:article_id>")
 def article_detail(article_id):
     try:
         article = Articles.query.get(article_id)
     except Exception as e:
         current_app.logger.error(e)
         abort(404)
+        # 分类信息
+    try:
+        categories = Category.query.all()
+    except Exception as e:
+        current_app.logger.error(e)
+        return UnknownException()
 
     if not article:
         # 返回数据未找到的页面
@@ -77,7 +83,8 @@ def article_detail(article_id):
     article.clicks += 1
     data = {
         "article": article.to_dict(),
-        "user_info": g.user.to_dict() if g.user else None,
+        'categories': categories,
+        # "user_info": g.user.to_dict() if g.user else None,
         "click_articles_list": click_articles_list
     }
     return render_template('blogs/detail.html', data=data)

@@ -75,9 +75,9 @@ function updateNewsData() {
             for (let i = 0; i < resp.data.article_list.length; i++) {
                 let article = resp.data.article_list[i];
                 let content = '<li>';
-                content += '<a href="article/detail/' +article.id + '" class="news_pic fl"><img src="' + article.index_image_url + '?imageView2/1/w/170/h/170"></a>';
-                content += '<a href="article/detail/' +article.id + '" class="news_title fl">' + article.title + '</a>';
-                content += '<a href="article/detail/' +article.id + '" class="news_detail fl">' + article.digest + '</a>';
+                content += '<a href="article/' +article.id + '" class="news_pic fl"><img src="' + article.index_image_url + '?imageView2/1/w/170/h/170"></a>';
+                content += '<a href="article/' +article.id + '" class="news_title fl">' + article.title + '</a>';
+                content += '<a href="article/' +article.id + '" class="news_detail fl">' + article.digest + '</a>';
                 content += '<div class="author_info fl">';
                 content += '<div class="source fl">来源：' + article.source + '</div>';
                 content += '<div class="time fl">' + article.create_time + '</div>';

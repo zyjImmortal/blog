@@ -12,6 +12,7 @@ from flask_bootstrap import Bootstrap
 from redis import StrictRedis
 from flask.json import JSONEncoder as _JSONEncoder
 from flask_wtf.csrf import generate_csrf
+from flask_ckeditor import CKEditor
 from werkzeug.exceptions import HTTPException
 
 from web.config.config import config
@@ -114,6 +115,7 @@ def create_app(config_name):
     Session(app)  # 需要在config文件对session进行配置存储位置等
     Bootstrap(app)
     CORS(app)
+    CKEditor(app)
     # 自定义json序列化对象
     app.json_encoder = JSONEncoder
 

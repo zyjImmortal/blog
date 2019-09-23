@@ -4,17 +4,11 @@
 首页-仙翁的博客
 {% endblock %}
 
-{% block scriptBlock %}
-<script type="text/javascript" src="../../static/blogs/js/index.js"></script>
-{% endblock %}
+{#{% block scriptBlock %}#}
+{#<script type="text/javascript" src="../../static/blogs/js/index.js"></script>#}
+{#  <script type="text/javascript" src="{{ url_for('static', filename='blogs/js/index.js') }}"></script>#}
+{#{% endblock %}#}
 
-{% block headerBlock %}
-<ul class="menu fl">
-    {% for category in data.categories %}
-        <li class="{% if category.active %}active{% endif %}" data-cid="{{ category.id }}"><a href="javascript:;">{{ category.name }}</a></li>
-    {% endfor %}
-</ul>
-{% endblock %}
 
 {% block contentBlock %}
 <ul class="list_con fl">

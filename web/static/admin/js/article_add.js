@@ -7,6 +7,10 @@ $(function () {
     $("#article_add").submit(function (e) {
         e.preventDefault()
         // 添加文章
+        $("#article-md").val(testEditor.getMarkdown());
+        $("#article-html").val(testEditor.getHTML());
+        console.log(testEditor.getHTML())
+        // console.log(testEditor.())
         $(this).ajaxSubmit({
             url: "/article/add",
             type: "post",

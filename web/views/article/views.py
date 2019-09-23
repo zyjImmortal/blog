@@ -45,10 +45,11 @@ def add_article():
         title = request.form.get("title")
         source = "博主发布"
         digest = request.form.get("digest")
-        content = request.form.get("content")
+        content = request.form.get("content-html")
+        content_md = request.form.get("content-md")
         index_image = request.files.get("index_image")
         category_id = request.form.get("category_id")
-        if not all([title, source, digest, content, index_image, category_id]):
+        if not all([title, source, digest, content, index_image, category_id, content_md]):
             return ParameterException(msg="参数错误")
         try:
             index_image = index_image.read()
@@ -64,6 +65,7 @@ def add_article():
         article.title = title
         article.digest = digest
         article.content = content
+        article.content_md = content_md
         article.category_id = category_id
         article.source = source
         article.user_id = g.user.id
@@ -95,6 +97,11 @@ def article_detail(article_id):
     except Exception as e:
         current_app.logger.error(e)
         return UnknownException()
+    try:
+        categories = Category.query.filter_by().all()
+    except Exception as e:
+        current_app.logger.error(e)
+        return UnknownException()
 
     if not article_res:
         # 返回数据未找到的页面
@@ -114,10 +121,11 @@ def article_detail(article_id):
 
     data = {
         "article": article_res.to_dict(),
-        "user_info": g.user.to_dict() if g.user else None,
+        "categories": categories,
+        # "user_info": g.user.to_dict() if g.user else None,
         "click_articles_list": click_articles_list,
     }
-    return render_template('blogs/detail.html', data=data)
+    return render_template('admin/news_edit_detail.html', data=data)
 
 
 @article.route('/delete/<int:article_id>')
@@ -136,3 +144,13 @@ def delete_article(article_id):
         current_app.logger.error(e)
         return UnknownException()
     return Success(msg='删除成功')
+
+
+@article.route('/edit', methods=["POST"])
+def edit_article():
+    article_id = request.form.get("article_id")
+    title = request.form.get("title")
+    digest = request.form.get("digest")
+    content = request.form.get("content")
+    index_image = request.files.get("index_image")
+    category_id = request.form.get("category_id")

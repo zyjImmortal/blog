@@ -18,6 +18,7 @@ wtforms = "*"
 bootstrap-flask = "*"
 pytest = "*"
 qiniu = "*"
+flask-ckeditor = "*"
 
 [dev-packages]
 

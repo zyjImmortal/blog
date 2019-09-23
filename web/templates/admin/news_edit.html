@@ -33,7 +33,8 @@
         {% for Article in data.articles %}
             <tr>
                 <td>{{ Article.id }}</td>
-                <td class="tleft"><a href="/article/detail/{{ Article.id }}" target="_blank">{{ Article.title }}</a></td>
+                <td class="tleft"><a href="/article/detail/{{ Article.id }}" target="_blank">{{ Article.title }}</a>
+                </td>
                 <td>{{ Article.clicks }}</td>
                 <td>{{ Article.create_time }}</td>
                 <td>

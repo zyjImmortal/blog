@@ -5,11 +5,12 @@
     <title>博客后台管理</title>
     <link rel="stylesheet" type="text/css" href="../../static/admin/css/reset.css">
     <link rel="stylesheet" type="text/css" href="../../static/admin/css/main.css">
+    <link rel="stylesheet" type="text/css" href="../../static/admin/editor-md/css/editormd.css">
     <script type="text/javascript" src="../../static/admin/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="../../static/admin/js/jquery.form.min.js"></script>
-    <script src="../../static/admin/ckeditor5/ckeditor.js"></script>
-    <script src="../../static/admin/ckeditor5/ckeditor.js.map"></script>
-    <script src="../../static/admin/js/tinymce_setup.js"></script>
+    <script src="../../static/admin/js/ck_config.js"></script>
+    <script src="../../static/admin/editor-md/editormd.min.js"></script>
+    <script src="../../static/admin/js/editor_md_config.js"></script>
     <script src="../../static/admin/js/article_add.js"></script>
 
 </head>
@@ -46,8 +47,16 @@
         </div>
         <div class="form_group">
             <label>新闻内容：</label>
-            <div class="rich_wrap fl">
-                <input class="input_area" id="editor" name="content" value="">
+            {#            <div class="rich_wrap fl">#}
+            {#                <input class="input_area" id="editor" name="content" value="">#}
+            {#                {{ ckeditor.create(name="content") }}#}
+            {#                {{ ckeditor.config(language='cn',width='100%',heigth=400) }}#}
+            {#            </div>#}
+            <div class="input_wrap fl" id="editormd">
+                <textarea id="article-md" class="editormd-markdown-textarea" style="display: none" name="content-markdown">
+
+                </textarea>
+                <textarea id="article-html" class="editormd-html-textarea" name="content-html" style="display: none"></textarea>
             </div>
         </div>
         <div class="form_group indent_group line_top">
@@ -56,6 +65,5 @@
         </div>
     </form>
 </div>
-
 </body>
 </html>
