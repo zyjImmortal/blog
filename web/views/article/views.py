@@ -7,6 +7,7 @@ from web.utils import constants
 from web.exception import UnknownException, ParameterException, Success
 from web.utils.file_util import storage
 from . import article
+import traceback
 
 
 @article.route('/list')
@@ -19,7 +20,7 @@ def articles():
         per_page = int(per_page)
         page = int(page)
     except (TypeError, ValueError) as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return ParameterException()
     filters = [Articles.status == 0]
     if cid != 1:
@@ -28,7 +29,7 @@ def articles():
         paginate = Articles.query.filter(*filters).order_by(Articles.create_time.desc()) \
             .paginate(page, per_page, error_out=False)
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     data = {
         "total_pages": paginate.pages,
@@ -54,12 +55,12 @@ def add_article():
         try:
             index_image = index_image.read()
         except Exception as e:
-            current_app.logger.error(e)
+            current_app.logger.error(traceback.format_exc())
             return ParameterException(msg="文件读取错误")
         try:
             key = storage(index_image)
         except Exception as e:
-            current_app.logger.error(e)
+            current_app.logger.error(traceback.format_exc())
             return ParameterException(msg="文件上传错误")
         article = Articles()
         article.title = title
@@ -74,14 +75,14 @@ def add_article():
             db.session.add(article)
             db.session.commit()
         except Exception as e:
-            current_app.logger.error(e)
+            current_app.logger.error(traceback.format_exc())
             db.session.rollback()
             return UnknownException()
         return Success(msg="添加成功")
     try:
         categories = Category.query.all()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
 
     info = {
@@ -95,12 +96,12 @@ def article_detail(article_id):
     try:
         article_res = Articles.query.get(article_id)
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     try:
         categories = Category.query.filter_by().all()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
 
     if not article_res:
@@ -112,7 +113,7 @@ def article_detail(article_id):
     try:
         article_list = Articles.query.order_by(Articles.clicks.desc()).limit(constants.CLICK_RANK_MAX_NEWS)
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
 
     click_articles_list = []
@@ -133,7 +134,7 @@ def delete_article(article_id):
     try:
         article_res = Articles.query.get(article_id)
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     if not article_res:
         return ParameterException(msg="文章id不存在")
@@ -141,7 +142,7 @@ def delete_article(article_id):
     try:
         db.session.commit()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     return Success(msg='删除成功')
 
@@ -160,7 +161,7 @@ def edit_article():
     try:
         article = Articles.query.get(article_id)
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
 
     if not article:
@@ -170,13 +171,13 @@ def edit_article():
         try:
             index_image = index_image.read()
         except Exception as e:
-            current_app.logger.error(e)
+            current_app.logger.error(traceback.format_exc())
             return ParameterException(msg="文件读取错误")
 
         try:
             key = storage(index_image)
         except Exception as e:
-            current_app.logger.error(e)
+            current_app.logger.error(traceback.format_exc())
             return ParameterException(msg="文件上传错误")
         article.index_image_url = constants.QINIU_DOMIN_PREFIX + key
     article.title = title
@@ -189,7 +190,7 @@ def edit_article():
     try:
         db.session.commit()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         db.session.rollback()
         return UnknownException()
     return Success(msg="编辑成功")
