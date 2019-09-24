@@ -1,3 +1,5 @@
+import traceback
+
 from flask import render_template, session, current_app, abort, g
 
 from web.exception import Success, UnknownException
@@ -14,13 +16,13 @@ def index():
         try:
             user = User.query.get(user_id)
         except Exception as e:
-            current_app.logger.error(e)
+            current_app.logger.error(traceback.format_exc())
             return UnknownException()
     articles = []
     try:
         articles = Articles.query.order_by(Articles.clicks.desc()).limit(current_app.config['TOP_CLICK_COUNTS'])
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     articles_info = [article.to_dict() for article in articles]
 
@@ -28,14 +30,14 @@ def index():
     try:
         categories = Category.query.all()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
 
     try:
         article_list = Articles.query.filter_by(status=0).order_by(Articles.clicks.desc()).limit(
             constants.CLICK_RANK_MAX_NEWS)
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
 
     click_articles_list = []
@@ -56,13 +58,13 @@ def article_detail(article_id):
     try:
         article = Articles.query.get(article_id)
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         abort(404)
         # 分类信息
     try:
         categories = Category.query.all()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
 
     if not article:
@@ -73,7 +75,7 @@ def article_detail(article_id):
         article_list = Articles.query.filter_by(status=0).order_by(Articles.clicks.desc()).limit(
             constants.CLICK_RANK_MAX_NEWS)
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
 
     click_articles_list = []

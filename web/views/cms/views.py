@@ -1,3 +1,5 @@
+import traceback
+
 from flask import render_template, request, url_for, session, redirect, current_app, jsonify
 
 from web.exception import ParameterException, UnknownException, Success
@@ -75,7 +77,7 @@ def news_edit():
     try:
         page = int(page)
     except (TypeError, ValueError) as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         page = 1
     current_page = 1
     total_page = 1
@@ -123,7 +125,7 @@ def add_category():
     try:
         category = Category.query.filter_by(name=category_name).first()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     if category:
         return ParameterException(msg="分类名称已存在")
@@ -134,7 +136,7 @@ def add_category():
         db.session.add(new_category)
         db.session.commit()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     return Success(msg="添加成功")
 
@@ -148,7 +150,7 @@ def edit_category():
     try:
         category = Category.query.filter_by(id=category_id).first()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     if not category:
         return ParameterException(msg="该分类不存在")
@@ -158,6 +160,6 @@ def edit_category():
     try:
         db.session.commit()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     return Success(msg="修改成功")

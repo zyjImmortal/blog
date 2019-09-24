@@ -1,3 +1,5 @@
+import traceback
+
 from flask import request, current_app, session
 import re
 from web.exception import ParameterException, UnknownException, Success
@@ -26,7 +28,7 @@ def register():
     try:
         real_email_code = RedisUtil.get(constants.EMAIL_CODE_KEY + email_address)
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     if real_email_code != email_code:
         if email_code == "1234":
@@ -42,7 +44,7 @@ def register():
         db.session.add(user)
         db.session.commit()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         db.session.rollback()
         return UnknownException()
     return Success(msg="注册成功")
@@ -63,7 +65,7 @@ def get_email_code():
     try:
         RedisUtil.set(constants.EMAIL_CODE_KEY + email_address, email_code)
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     send_register_mail_code(mail, email_address, username, email_code)
     return Success(msg="验证码发送成功")
@@ -83,7 +85,7 @@ def login():
     try:
         user = User.query.filter_by(nick_name=username).first()
     except Exception as e:
-        current_app.logger.error(e)
+        current_app.logger.error(traceback.format_exc())
         return UnknownException()
     if not user:
         return ParameterException(msg="用户名输入错误")
