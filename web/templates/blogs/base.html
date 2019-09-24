@@ -17,15 +17,15 @@
     <div class="header">
         <a href="{{ url_for('home.index') }}" class="logo fl"><img src="../../static/blogs/images/logo.png" alt="logo"></a>
 
-        {#        {% block headerBlock %}#}
-        {#            #}
-        {#        {% endblock %}#}
-        <ul class="menu fl">
-            {% for category in data.categories %}
-                <li class="{% if category.active %}active{% endif %}" data-cid="{{ category.id }}"><a
-                        href="javascript:;">{{ category.name }}</a></li>
-            {% endfor %}
-        </ul>
+        {% block headerBlock %}
+            <ul class="menu fl">
+                {% for category in data.categories %}
+                    <li class="{% if category.id == 1 %}active{% endif %}" data-cid="{{ category.id }}"><a
+                            href="javascript:;">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endblock %}
+
 
         {# 判断用户是否登录 #}
         {% if data.user_info %}
