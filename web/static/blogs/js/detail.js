@@ -26,7 +26,22 @@ $(function(){
         // 评论提交
     $(".comment_form").submit(function (e) {
         e.preventDefault();
-
+        $(this).ajaxSubmit({
+            url: "/article/comment/add",
+            type: "post",
+            // contentType:"application/json",
+            headers: {
+                "X-CSRFToken": getCookie("csrf_token")
+            },
+            success: function (response) {
+                if (response.error_code === 0) {
+                    // 返回上一页，刷新数据
+                    location.href = document.referrer;
+                } else {
+                    alert(response.errmsg);
+                }
+            }
+        })
     })
 
     $('.comment_list_con').delegate('a,input','click',function(){
