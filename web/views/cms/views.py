@@ -10,11 +10,24 @@ from web.utils import constants
 from web import db
 from . import cms
 
+from datetime import datetime
+
 
 @cms.route('/home')
 @admin_required
 def home():
-    return render_template('admin/index.html')
+    user_id = session.get('user_id', None)
+    user = None
+    if user_id:
+        try:
+            user = User.query.get(user_id)
+        except Exception as e:
+            current_app.logger.error(traceback.format_exc())
+            return UnknownException()
+    data = {
+        "user": user
+    }
+    return render_template('admin/index.html', data=data)
 
 
 @cms.route('/login', methods=['POST', 'GET'])
@@ -22,9 +35,24 @@ def login():
     if request.method == 'POST':
         form = CmsLoginForm().validate_for_api()
         admin = User.verify(form.nick_name.data, form.password.data)
+        try:
+            admin.last_login = datetime.now()
+            db.session.commit()
+        except Exception as e:
+            current_app.logger.error(traceback.format_exc())
+            db.session.rollback()
+            return UnknownException()
         session['user_id'] = admin.id
         return redirect(url_for('cms.home'))
     return render_template('admin/login.html')
+
+
+@cms.route('/logout')
+def logout():
+    session['user_id'] = None
+    session['username'] = None
+    session['user_email'] = None
+    return redirect(url_for('cms.login'))
 
 
 @cms.route('/user_count')
@@ -36,7 +64,35 @@ def user_count():
 @cms.route('/user_list')
 @admin_required
 def user_list():
-    return render_template('admin/user_list.html')
+    page = request.args.get("page", 1)
+    key_words = request.args.get("keywords", "")
+    try:
+        page = int(page)
+    except (TypeError, ValueError) as e:
+        current_app.logger.error(traceback.format_exc())
+        page = 1
+    current_page = 1
+    total_page = 1
+    filters = []
+    try:
+        if key_words:
+            filters.append(User.nick_name.contains(key_words))
+        paginate = User.query.filter(*filters).order_by(User.create_time.desc()) \
+            .paginate(page=page, per_page=constants.ADMIN_NEWS_PAGE_MAX_COUNT, error_out=False)
+        user_list = paginate.items
+        current_page = paginate.page
+        total_page = paginate.pages
+    except Exception as e:
+        current_page.logger.error(e)
+        return UnknownException()
+
+    user_dict_list = [user.to_admin_dict() for user in user_list]
+    data = {
+        "total_page": total_page,
+        "current_page": current_page,
+        "users": user_dict_list
+    }
+    return render_template('admin/user_list.html', data=data)
 
 
 @cms.route('/news_review')

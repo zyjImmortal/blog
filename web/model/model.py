@@ -70,6 +70,7 @@ class User(BaseModel, db.Model, MixinJSONSerializer):
     avatar_url = db.Column(db.String(256))  # 用户头像路径
     last_login = db.Column(db.DateTime, default=datetime.now)  # 最后一次登录时间
     is_admin = db.Column(db.Boolean, default=False)
+    is_delete = db.Column(db.Boolean, default=False)
     signature = db.Column(db.String(512))  # 用户签名
     gender = db.Column(  # 订单的状态
         db.Enum(
@@ -119,6 +120,7 @@ class User(BaseModel, db.Model, MixinJSONSerializer):
         resp_dict = {
             "id": self.id,
             "nick_name": self.nick_name,
+            "role": "管理员" if self.is_admin else "游客",
             "email": self.email,
             "register": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             "last_login": self.last_login.strftime("%Y-%m-%d %H:%M:%S"),

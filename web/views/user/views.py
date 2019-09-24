@@ -1,6 +1,6 @@
 import traceback
 
-from flask import request, current_app, session
+from flask import request, current_app, session, redirect, url_for
 import re
 from web.exception import ParameterException, UnknownException, Success
 from web.model.model import User
@@ -102,3 +102,4 @@ def logout():
     session['user_id'] = None
     session['username'] = None
     session['user_email'] = None
+    return redirect(url_for('home.index'))

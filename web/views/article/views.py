@@ -194,3 +194,8 @@ def edit_article():
         db.session.rollback()
         return UnknownException()
     return Success(msg="编辑成功")
+
+
+@article.route('/comment/add', methods=['POST'])
+def add_comment():
+    pass

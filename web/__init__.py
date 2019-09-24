@@ -141,7 +141,7 @@ def create_app(config_name):
 
     # 注册蓝图
     register_blu(app)
-    # 钩子函数
+    # 请求生命周期函数
     register_before_request(app)
     register_after_request(app)
     # 注册自定义模板过滤器
