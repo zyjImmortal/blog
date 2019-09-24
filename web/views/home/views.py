@@ -2,6 +2,7 @@ import traceback
 
 from flask import render_template, session, current_app, abort, g
 
+from web import db
 from web.exception import Success, UnknownException
 from web.model.model import User, Articles, Category
 from web.utils import constants
@@ -83,6 +84,12 @@ def article_detail(article_id):
         click_articles_list.append(article_click.to_basic_dict())
 
     article.clicks += 1
+    try:
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        db.session.rollback()
+        return UnknownException()
     data = {
         "article": article.to_dict(),
         'categories': categories,
