@@ -151,6 +151,45 @@ def edit_article():
     article_id = request.form.get("article_id")
     title = request.form.get("title")
     digest = request.form.get("digest")
-    content = request.form.get("content")
+    content = request.form.get("content-html")
+    content_md = request.form.get("content-markdown")
     index_image = request.files.get("index_image")
     category_id = request.form.get("category_id")
+    if not all([title, digest, content, category_id, content_md]):
+        return ParameterException(msg="参数错误")
+    try:
+        article = Articles.query.get(article_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return UnknownException()
+
+    if not article:
+        return ParameterException(msg="文章不存在")
+    key = ''
+    if index_image:
+        try:
+            index_image = index_image.read()
+        except Exception as e:
+            current_app.logger.error(e)
+            return ParameterException(msg="文件读取错误")
+
+        try:
+            key = storage(index_image)
+        except Exception as e:
+            current_app.logger.error(e)
+            return ParameterException(msg="文件上传错误")
+        article.index_image_url = constants.QINIU_DOMIN_PREFIX + key
+    article.title = title
+    article.digest = digest
+    article.content = content
+    article.content_md = content_md
+    article.category_id = category_id
+    # article.user_id = g.user.id
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        db.session.rollback()
+        return UnknownException()
+    return Success(msg="编辑成功")

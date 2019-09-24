@@ -3,7 +3,7 @@ function getCookie(name) {
     return r ? r[1] : undefined;
 }
 
-$(function(){
+$(function () {
     $(".news_edit").submit(function (e) {
         e.preventDefault()
         // TODO 新闻编辑提交
@@ -17,17 +17,17 @@ $(function(){
             //         }
             //     }
             // },
-            url: "article/edit",
-            type:"post",
-            headers:{
+            url: "/article/edit",
+            type: "post",
+            headers: {
                 "X-CSRFToken": getCookie("csrf_token")
             },
-            success:function (response) {
-                if (resp.errno === "0") {
+            success: function (response) {
+                if (response.error_code === 0) {
                     // 返回上一页，刷新数据
                     location.href = document.referrer;
                 } else {
-                    alert(resp.errmsg);
+                    alert(response.msg);
                 }
             }
         })
