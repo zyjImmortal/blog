@@ -146,7 +146,7 @@ def delete_article(article_id):
         return UnknownException()
     return Success(msg='删除成功')
 
-
+@admin_required
 @article.route('/edit', methods=["POST"])
 def edit_article():
     article_id = request.form.get("article_id")
@@ -195,7 +195,3 @@ def edit_article():
         return UnknownException()
     return Success(msg="编辑成功")
 
-
-@article.route('/comment/add', methods=['POST'])
-def add_comment():
-    pass

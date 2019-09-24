@@ -1,6 +1,6 @@
 import traceback
 
-from flask import render_template, session, current_app, abort, g
+from flask import render_template, session, current_app, abort, request
 
 from web import db
 from web.exception import Success, UnknownException
@@ -97,3 +97,10 @@ def article_detail(article_id):
         "click_articles_list": click_articles_list
     }
     return render_template('blogs/detail.html', data=data)
+
+
+@home.route('/comment/add', methods=['POST'])
+def add_comment():
+    content = request.form.get("")
+
+    pass

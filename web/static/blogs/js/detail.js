@@ -27,7 +27,7 @@ $(function(){
     $(".comment_form").submit(function (e) {
         e.preventDefault();
         $(this).ajaxSubmit({
-            url: "/article/comment/add",
+            url: "/home/comment/add",
             type: "post",
             // contentType:"application/json",
             headers: {
