@@ -47,7 +47,7 @@ def add_article():
         source = "博主发布"
         digest = request.form.get("digest")
         content = request.form.get("content-html")
-        content_md = request.form.get("content-md")
+        content_md = request.form.get("content-markdown")
         index_image = request.files.get("index_image")
         category_id = request.form.get("category_id")
         if not all([title, source, digest, content, index_image, category_id, content_md]):
@@ -98,6 +98,7 @@ def article_detail(article_id):
     except Exception as e:
         current_app.logger.error(traceback.format_exc())
         return UnknownException()
+    # TODO 最新分类不返回
     try:
         categories = Category.query.filter_by().all()
     except Exception as e:
