@@ -2,6 +2,9 @@
 {% block titleBlock %}
     文章详情页
 {% endblock %}
+{% block headerBlock %}
+
+{% endblock %}
 {% block scriptBlock %}
     <script src="../../static/blogs/js/detail.js"></script>
 {% endblock %}
@@ -48,23 +51,45 @@
         <div class="comment_list_con">
             {% for comment in data.comments %}
                 <div class="comment_list">
-                    <div class="person_pic fl">
-                        <img src="{% if comment.user.avatar_url %}
-                {{ comment.user.avatar_url }}
-            {% else %}
-                ../../static/blogs/images/person01.png
-            {% endif %}" alt="用户图标">
-                    </div>
-                    <div class="user_name fl">{{ comment.user.nick_name }}</div>
-                    <div class="comment_text fl">{{ comment.content }}</div>
                     {% if comment.parent %}
+                        <div class="person_pic fl">
+                            <img src="{% if comment.user.avatar_url %}
+                            {{ comment.parent.user.avatar_url }}
+                                {% else %}
+                                ../../static/blogs/images/person01.png
+                                {% endif %}" alt="用户图标">
+                        </div>
+                        <div class="user_name fl">{{ comment.parent.user.nick_name }}</div>
+                        <div class="comment_text fl">{{ comment.parent.content }}</div>
                         <div class="reply_text_con fl">
-                            <div class="user_name2">{{ comment.parent.user.nick_name }}</div>
+                            <div class="user_name2">{{ comment.user.nick_name }}</div>
                             <div class="reply_text">
-                                {{ comment.parent.content }}
+                                {{ comment.content }}
                             </div>
                         </div>
+                    {% else %}
+                        <div class="person_pic fl">
+                            <img src="{% if comment.user.avatar_url %}
+                            {{ comment.user.avatar_url }}
+                                {% else %}
+                                ../../static/blogs/images/person01.png
+                                {% endif %}" alt="用户图标">
+                        </div>
+                        <div class="user_name fl">{{ comment.user.nick_name }}</div>
+                        <div class="comment_text fl">{{ comment.content }}</div>
                     {% endif %}
+
+
+                    {#                    {% if comment.parent %}#}
+                    {#                        <div class="reply_text_con fl">#}
+                    {#                            <div class="user_name2">{{ comment.parent.user.nick_name }}</div>#}
+                    {#                            <div class="reply_text">#}
+                    {#                                {{ comment.parent.content }}#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                    {% endif %}#}
+
+
                     <div class="comment_time fl">{{ comment.create_time }}</div>
                     <a href="javascript:;" class="comment_up fr" data-commentid="{{ comment.id }}"
                        data-article-id="{{ comment.article_id }}">赞</a>

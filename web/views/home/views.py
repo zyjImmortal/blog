@@ -102,7 +102,8 @@ def article_detail(article_id):
 
     comments = []
     try:
-        comments = Comment.query.filter(Comment.article_id == article_id, Comment.status == 1).order_by(
+        comments = Comment.query.filter(Comment.article_id == article_id, Comment.status == 0
+                                        ).order_by(
             Comment.create_time.desc()).all()
     except Exception as e:
         current_app.logger.error(e)
