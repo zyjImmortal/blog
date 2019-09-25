@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import redirect, url_for, flash, g
+from flask import redirect, url_for, flash, g, session
 from web.exception import AuthFailed
 from web.utils.common import get_current_user
 
@@ -24,6 +24,20 @@ def login_required(fn):
         if not user:
             flash("请先登录后，方可操作", 'warning')
             return redirect(url_for('cms.login'))
+        return fn(*args, **kwargs)
+
+    return wrapper
+
+
+def user_login_data(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        user_id = session.get("user_id")
+        user = None
+        if user_id:
+            from web.model.model import User
+            user = User.query.get(user_id)
+        g.user = user
         return fn(*args, **kwargs)
 
     return wrapper
