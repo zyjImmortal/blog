@@ -206,12 +206,13 @@ class Comment(BaseModel, db.Model, MixinJSONSerializer):
 
     id = db.Column(db.Integer, primary_key=True)  # 评论编号
     user_id = db.Column(db.Integer, db.ForeignKey("blog_user.id"), nullable=False)  # 用户id
-    status = db.Column(db.Integer, default=0)  # 评论状态，0，待审核，1，审核通过,2,已拒绝
+    status = db.Column(db.Integer, default=1)  # 评论状态，1，待审核，2，审核通过,3,已拒绝
     article_id = db.Column(db.Integer, db.ForeignKey("blog_article.id"), nullable=False)  # 文章id
     content = db.Column(db.Text, nullable=False)  # 评论内容
     parent_id = db.Column(db.Integer, db.ForeignKey("article_comment.id"))  # 父评论id
     parent = db.relationship("Comment", remote_side=[id])  # 自关联
     like_count = db.Column(db.Integer, default=0)  # 点赞条数
+    is_delete = db.Column(db.Integer,default=0)  # 0表示正常,1 表示删除
 
     def to_dict(self):
         resp_dict = {

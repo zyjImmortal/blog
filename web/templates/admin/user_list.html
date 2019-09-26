@@ -12,6 +12,11 @@
 <body>
 <div class="breadcrub">
     当前位置：用户管理>用户列表
+    <form class="news_filter_form">
+{#        <input type="text" placeholder="请输入关键字" class="input_txt">#}
+{#        <input type="submit" value="搜 索" class="input_sub">#}
+        <input type="button" value="新增" class="input_sub" onclick="javascript:window.location.href='/cms/user/add'">
+    </form>
 </div>
 <div class="pannel">
     <table class="common_table">
@@ -35,7 +40,9 @@
 </div>
 
 <div class="box">
-    <div id="pagination" class="page"></div>
+    <div id="pagination" class="page">
+
+    </div>
 </div>
 
 <script>

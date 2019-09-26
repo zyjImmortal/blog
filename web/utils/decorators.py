@@ -9,8 +9,12 @@ def admin_required(fn):
     def wrapper(*args, **kwargs):
         user = get_current_user()
         g.user = user
-        if not user or not user.is_admin:
-            return AuthFailed(msg="只有管理员可以操作")
+        if not user:
+            flash("用户不存在")
+            return redirect(url_for('cms.login'))
+        if not user.is_admin:
+            flash("只有管理员可以操作")
+            return redirect(url_for('cms.login'))
         return fn(*args, **kwargs)
 
     return wrapper

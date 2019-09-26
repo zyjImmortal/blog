@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客后台管理</title>
+    <link rel="stylesheet" type="text/css" href="../../static/admin/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../../static/admin/css/main.css">
+    <script type="text/javascript" src="../../static/admin/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../../static/admin/js/jquery.form.min.js"></script>
+    <script src="../../static/admin/js/user_add.js"></script>
+
+</head>
+<body>
+<div class="breadcrub">
+    当前位置：博客管理>用户管理
+</div>
+<div class="pannel">
+    <form class="news_edit" id="article_add">
+        <h3 class="review_title">新增用户</h3>
+        <div class="form_group">
+            <label>用户名：</label>
+            <input type="text" class="input_txt2" value="" name="nick_name">
+        </div>
+        <div class="form_group">
+            <label>用户角色：</label>
+            <select class="sel_opt" name="role">
+                {% for role in info.roles %}
+                    <option value="{{ role.id }}">{{ role.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form_group">
+            <label>密码：</label>
+            <input type="text" class="input_txt2" value="" name="password">
+        </div>
+        <div class="form_group">
+            <label>邮箱：</label>
+            <input type="text" class="input_txt2" value="" name="email">
+        </div>
+        <div class="form_group indent_group line_top">
+            <input type="submit" value="确定" class="confirm">
+            <input type="button" value="取消" class="cancel" onclick="cancel()">
+        </div>
+    </form>
+</div>
+</body>
+</html>

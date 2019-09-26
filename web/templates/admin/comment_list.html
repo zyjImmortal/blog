@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客后台管理</title>
+    <link rel="stylesheet" type="text/css" href="../../static/admin/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../../static/admin/css/main.css">
+    <link rel="stylesheet" href="../../static/admin/css/jquery.pagination.css">
+
+    <script type="text/javascript" src="../../static/admin/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../../static/admin/js/comment_list.js"></script>
+    <script type="text/javascript" src="../../static/admin/js/jquery.pagination.min.js"></script>
+</head>
+<body>
+<div class="breadcrub">
+    当前位置：评论管理>评论列表管理
+</div>
+<div class="pannel">
+    <table class="common_table">
+        <tr>
+            <th width="5%">id</th>
+            <th width="10%">用户Id</th>
+            <th width="50%">评论内容</th>
+            <th width="10%">状态</th>
+            <th width="10%">操作</th>
+        </tr>
+        {% for comment in data.comments %}
+            <tr>
+                <td>{{ comment.id }}</td>
+                <td>{{ comment.user_id }}</td>
+                <td>{{ comment.content }}</td>
+                <td>{% if comment.status == 1 %}待审核{% elif comment.status == 2 %} 审核通过{% else %}已拒绝{% endif %}</td>
+                <td><a href="javascript:;" class="edit">删除</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+<div class="box">
+    <div id="pagination" class="page">
+
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#pagination").pagination({
+            currentPage: {{ data.current_page }},
+            totalPage: {{ data.total_page }},
+            callback: function (current) {
+                window.location = "/cms/comment/list?page=" + current;
+            }
+        });
+    });
+</script>
+</body>
+</html>
