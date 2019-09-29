@@ -45,6 +45,7 @@ class Dev(Config):
 
 class Pro(Config):
     LOG_LEVEL = logging.INFO
+    SQLALCHEMY_DATABASE_URI = "mysql+cymysql://root:fCIC1U+deBIuWFz@localhost:3306/blog"
 
 
 config = {
