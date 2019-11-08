@@ -9,6 +9,8 @@ from web import db
 
 
 class MixinJSONSerializer:
+
+    # sqlalchemy的model再实例化的时候是不走__init__方法的，如果要求走，需要通过@orm.reconstructor标记一下
     @orm.reconstructor
     def init_on_load(self):
         self._fields = []

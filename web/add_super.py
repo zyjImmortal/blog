@@ -3,7 +3,7 @@ from web.model.model import User
 
 
 def main():
-    app = create_app('dev')
+    app = create_app('pro')
     with app.app_context():
         # 创建一个超级管理员
         user = User()
