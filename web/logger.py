@@ -3,6 +3,7 @@ import logging
 import os
 from logging.handlers import BaseRotatingHandler
 
+
 class Log:
     def __init__(self, app, fmt=None, handler=None):
         self._app = app

@@ -4,38 +4,34 @@ from werkzeug.exceptions import HTTPException
 
 
 class APIException(HTTPException):
-    code = 500
-    msg = "抱歉，服务器未知错误"
-    error_code = 999
+    code = 0
+    msg = ""
     data = {}
 
-    def __init__(self, msg=None, code=None, error_code=None, headers=None, data=None):
+    def __init__(self, msg=None, code=None, headers=None, data=None):
         if code:
             self.code = code
         if msg:
             self.msg = msg
-        if error_code:
-            self.error_code = error_code
         if data:
             self.data = data
         if headers is not None:
             headers_merged = headers.copy()
             headers_merged.update(self.headers)
             self.headers = headers_merged
+        # flask的视图函数返回的必须是response对象
         # 调用super方法，自定义异常才会被框架包装成response对象并序列化成json返回，不然会报错
         super(APIException, self).__init__(msg, None)
 
     def get_body(self, environ=None):
-        # 定义返回响应
-        body = dict(
+        body = dict(   # 定义返回响应
             msg=self.msg,
-            error_code=self.error_code,
+            code=self.code,
             request=request.method + '  ' + self.get_url_no_param(),
             data=self.data
         )
         text = json.dumps(body)
-        # 转换为字符串
-        return text_type(text)
+        return text_type(text)  # 转换为字符串后返回
 
     @staticmethod
     def get_url_no_param():
@@ -50,13 +46,11 @@ class APIException(HTTPException):
 class Success(APIException):
     code = 200
     msg = '成功'
-    error_code = 0
 
 
 class Failed(APIException):
-    code = 200
+    code = 500
     msg = '失败'
-    error_code = 9999
 
 
 class AuthFailed(APIException):
