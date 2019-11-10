@@ -19,6 +19,7 @@ bootstrap-flask = "*"
 pytest = "*"
 qiniu = "*"
 flask-ckeditor = "*"
+gunicorn = "*"
 
 [dev-packages]
 
