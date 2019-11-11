@@ -8,6 +8,7 @@ __pycache__/
 migrations/
 logs/
 manage.py
+
 .qiniu_pythonsdk_hostscache.json
 
 # C extensions
