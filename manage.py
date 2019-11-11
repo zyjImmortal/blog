@@ -2,7 +2,7 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from web import create_app, db
 
-app = create_app("pro")
+app = create_app("ivwen")
 
 
 def main():

@@ -127,8 +127,7 @@ def create_app(config_name):
         if isinstance(e, HTTPException):
             code = e.code
             msg = e.description
-            error_code = 20000
-            return APIException(msg, code, error_code)
+            return APIException(msg, code)
         else:
             # 在所有视图函数或者model中，除了需要添加或者更新需要手动捕获异常，回滚，其他地方不需要捕获，交给errorhandler处理
             # 如果不是debug模式，就将异常输入到log文件中,并返回UnknownException
