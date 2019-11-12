@@ -6,7 +6,14 @@
 
 {% endblock %}
 {% block scriptBlock %}
+    <link rel="stylesheet" type="text/css" href="../../static/admin/editor-md/css/editormd.preview.css">
+    <link rel="stylesheet" type="text/css" href="../../static/admin/editor-md/css/editormd.css">
+    <link rel="stylesheet" type="text/css" href="../../static/blogs/css/detail.css">
     <script src="../../static/blogs/js/detail.js"></script>
+    <script src="../../static/blogs/js/ckeditor_config.js "></script>
+    <script src="../../static/admin/editor-md/editormd.min.js"></script>
+    <script src="../../static/admin/editor-md/lib/marked.min.js"></script>
+    <script src="../../static/admin/editor-md/lib/prettify.min.js"></script>
 {% endblock %}
 {% block contentBlock %}
     <div class="detail_con fl" xmlns="http://www.w3.org/1999/html">
@@ -19,7 +26,11 @@
         <p class="summary">
             {{ data.article.digest }}
         </p>
-        {{ data.article.content | safe }}
+        <div id="editormd-content">
+{#            <textarea style="display: none">{{ data.article.content | safe }}</textarea>#}
+            {{ data.article.content | safe }}
+        </div>
+
 
 
         {#        <a href="javascript:;" class="collection block-center">收藏</a>#}
