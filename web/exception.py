@@ -7,6 +7,7 @@ class APIException(HTTPException):
     code = 0
     msg = ""
     data = {}
+    error_code = 0
 
     def __init__(self, msg=None, code=None, error_code=None, headers=None, data=None):
         if code:
