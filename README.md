@@ -10,6 +10,7 @@
 * 执行python manage.py db upgrade 同步迁移数据到数据库
 * 执行python manage.py runserver 启动服务
 *  ```gunicorn -w 2 -b 127.0.0.1:5000 manage:app```
+* 添加supervisor作为进程管理
 
 ## 项目说明
 ### 所用的库
