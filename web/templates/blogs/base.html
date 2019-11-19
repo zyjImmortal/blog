@@ -7,14 +7,13 @@
     <link rel="stylesheet" type="text/css" href="../../static/blogs/css/main.css">
     <script type="text/javascript" src="../../static/blogs/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="../../static/blogs/js/main.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='blogs/js/index.js') }}"></script>
-    {#    <script type="text/javascript" src="../../static/blogs/js/index.js"></script>#}
+        <script type="text/javascript" src="../../static/blogs/js/index.js"></script>
         {% block scriptBlock %}{% endblock %}
 </head>
 <body>
 <div class="header_con">
     <div class="header">
-        <a href="{{ url_for('home.index') }}" class="logo fl"><img src="../../static/blogs/images/logo5.jpg" alt="logo"></a>
+        <a href="{{ url_for('home.index') }}" class="logo fl"><img src="../../static/blogs/images/signature1.jpg" alt="logo"></a>
 
         {% block headerBlock %}
             <ul class="menu fl">

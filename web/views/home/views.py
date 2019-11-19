@@ -1,6 +1,6 @@
 import traceback
-
-from flask import render_template, session, current_app, abort, request, g
+import json
+from flask import render_template, session, current_app, abort, request, g, jsonify
 
 from web import db
 from web.exception import Success, UnknownException, ParameterException
@@ -82,14 +82,21 @@ def article_detail(article_id):
         abort(404)
 
     try:
-        article_list = Articles.query.filter_by(status=0).order_by(Articles.clicks.desc()).limit(
+        article_click_list = Articles.query.filter_by(status=0).order_by(Articles.clicks.desc()).limit(
             constants.CLICK_RANK_MAX_NEWS)
     except Exception as e:
         current_app.logger.error(traceback.format_exc())
         return UnknownException()
 
+    try:
+        article_list = Articles.query.filter_by(status=0,).limit(
+            constants.OTHER_NEWS_PAGE_MAX_COUNT)
+    except Exception as e:
+        current_app.logger.error(traceback.format_exc())
+        return UnknownException()
+
     click_articles_list = []
-    for article_click in article_list if article_list else []:
+    for article_click in article_click_list if article_click_list else []:
         click_articles_list.append(article_click.to_basic_dict())
 
     article.clicks += 1
@@ -116,6 +123,7 @@ def article_detail(article_id):
         'user_info': user.to_dict() if user else None,
         "article": article.to_dict(),
         'categories': categories,
+        'article_list':article_list,
         # "user_info": g.user.to_dict() if g.user else None,
         "click_articles_list": click_articles_list,
         "comments": comment_list

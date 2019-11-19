@@ -17,7 +17,6 @@ $(function () {
         if (clickCid != currentCid) {
             // 记录当前分类id
             currentCid = clickCid;
-
             // 重置分页参数
             cur_page = 1;
             total_page = 1;
